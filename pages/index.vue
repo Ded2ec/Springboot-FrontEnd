@@ -96,7 +96,7 @@
                                 $swal.close()
                                 // ส่งไปหน้า dashboard
                                 router.push('/backend/dashboard')
-                            }, 2000)
+                            }, 1300)
                         }
                     }
                 }
