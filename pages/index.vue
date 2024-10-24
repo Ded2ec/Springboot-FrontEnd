@@ -69,7 +69,7 @@
                             // alert('Username or Password is incorrect')
                             $swal.fire({
                                 title: 'Login failed',
-                                text: 'Please check your email and password',
+                                text: 'Please check your username and password',
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             })

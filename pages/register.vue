@@ -7,23 +7,87 @@
 
     // เรียกใช้ useFormRule สำหรับ validate form
     const { ruleRequired, ruleEmail, rulePassLen } = useFormRules()
-
+    const { $swal } : any = useNuxtApp()
+    const router = useRouter()
+    const config = useRuntimeConfig()
+            const SPRING_API = config.public.url
     // สร้าง function สำหรับ submit form
-    const submitForm = () => {
-        // เช็คเงื่อนไขว่าผ่าน validate หรือไม่
-        if(
-            ruleRequired(username.value) == true &&
-            ruleRequired(email.value) == true &&
-            ruleEmail(email.value) == true &&
-            ruleRequired(password.value) == true &&
-            rulePassLen(password.value) == true
-        ) {
-            // ถ้าผ่านทุกเงื่อนไข ให้แสดงค่าที่กรอกใน console
-            console.log('Username:', username.value)
-            console.log('Email:', email.value)
-            console.log('Password:', password.value)
+    const submitForm = async () => {
+    if (
+        ruleRequired(username.value) &&
+        ruleRequired(email.value) &&
+        ruleEmail(email.value) &&
+        ruleRequired(password.value) &&
+        rulePassLen(password.value)
+    ) {
+        try {
+            const response = await fetch(
+                `${SPRING_API}/authenticate/register-user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username.value,
+                    email: email.value,
+                    password: password.value
+                }),
+            });
+
+            const data = await response.json();
+
+            // ตรวจสอบว่าผู้ใช้งานมีอยู่แล้วหรือไม่
+            if (response.status === 409) {
+                $swal.fire({
+                    title: 'User Already Exists',
+                    text: 'This username or email is already registered',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                });
+                return;
+            }
+
+            if (!response.ok) {
+                console.error('Error status:', response.status);
+                console.error('Error message:', errorData.message || response.statusText);
+                $swal.fire({
+                    title: 'Register failed',
+                    text: 'Username already exists',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+                return;
+            }
+
+            $swal.fire({
+                title: 'Register Success',
+                text: 'Welcome to the system',
+                icon: 'success',
+                confirmButtonText: 'OK',
+            });
+
+            // Delay ก่อนเปลี่ยนหน้า
+            setTimeout(() => {
+                $swal.close();
+                router.push('/');
+            }, 500);
+            
+        } catch (err) {
+            console.error('Error during registration:', err);
+            $swal.fire({
+                title: 'Register failed',
+                text: 'Username already exists',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
         }
+
+        console.log('Username:', username.value);
+        console.log('Email:', email.value);
+        console.log('Password:', password.value);
+        console.log('API:', `${SPRING_API}/authenticate/register-user`);
     }
+};
 
     useHead({
         title: 'Register',
