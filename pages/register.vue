@@ -107,7 +107,7 @@
         <VRow no-gutters align="center" justify="center" class="fill-height">
             <VCol class="hidden-sm-and-down fill-height" md="6" lg="6">
                 <VImg
-                    src="https://wallpaper.dog/large/5557744.jpg"
+                    src="/images/mo.jpg"
                     cover
                     class="h-100 rounded-xl rounded-ts-0 rounded-bs-0 d-flex align-center justify-center"
                 >
